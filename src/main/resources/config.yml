@@ -1,0 +1,36 @@
+token: ""
+
+# Must be set to the guild id of the discord server
+guildId: ""
+# Must be set to the channel id of the server chat channel
+serverChatChannel: ""
+# Must be set to the role id of the verified role
+verifiedRole: ""
+
+database:
+  # type must be set to either MYSQL or FILE
+  type: "FILE"
+  # MYSQL settings
+  jdbcString: ""
+
+messages:
+  # <roleColor> color of role
+  # <roleName> role name
+  # <discordName> name of the discord user
+  # <text> actual text they sent
+  discordToMcMessage: "&f[&bDiscord &f┃ <roleColor><roleName> &f]&f <discordName> » &f<text>"
+
+  # <player> player name
+  # <prefix> prefix
+  # <message> message
+  # U can use html markdown for this
+  mcToDiscordMessage: "<prefix> **<player>** » <message>"
+
+  # message sent when a player links their account, use \n for new line
+  linkCodeMessage: "Your linking code is &b<code>&f click me to copy!"
+
+  # <player> player name, use \n for new line
+  linkedBroadcast: "&b<player> has successfully linked to discord! &7&o(/link)"
+
+  # error message when a player tries to link their account but they are already linked
+  linkedError: "&cYou are already linked to discord!"
