@@ -3,9 +3,13 @@ package me.thatonedevil.soulzStealLinking
 import com.google.common.util.concurrent.ThreadFactoryBuilder
 import me.thatonedevil.soulzStealLinking.chat.DiscordToMc
 import me.thatonedevil.soulzStealLinking.chat.McToDiscord
+import me.thatonedevil.soulzStealLinking.commads.ConfigReload
+import me.thatonedevil.soulzStealLinking.commads.DebugCommand
+import me.thatonedevil.soulzStealLinking.commads.UserInfoCommand
 import me.thatonedevil.soulzStealLinking.data.DataManager
 import me.thatonedevil.soulzStealLinking.linking.LinkCode
 import me.thatonedevil.soulzStealLinking.linking.LinkEmbed
+import me.thatonedevil.soulzStealLinking.linking.PlayerJoinEvents
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder

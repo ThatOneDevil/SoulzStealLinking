@@ -1,4 +1,4 @@
-package me.thatonedevil.soulzStealLinking
+package me.thatonedevil.soulzStealLinking.commads
 
 import me.thatonedevil.soulzStealLinking.data.DataManager.getDebugMessage
 import org.bukkit.command.Command

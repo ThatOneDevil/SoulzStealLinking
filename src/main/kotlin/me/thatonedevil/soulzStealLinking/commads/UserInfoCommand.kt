@@ -1,4 +1,4 @@
-package me.thatonedevil.soulzStealLinking
+package me.thatonedevil.soulzStealLinking.commads
 
 import me.thatonedevil.soulzStealLinking.data.DataManager
 import net.dv8tion.jda.api.EmbedBuilder

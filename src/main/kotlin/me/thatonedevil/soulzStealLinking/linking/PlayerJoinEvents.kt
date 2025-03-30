@@ -1,4 +1,4 @@
-package me.thatonedevil.soulzStealLinking
+package me.thatonedevil.soulzStealLinking.linking
 
 import me.thatonedevil.soulzStealLinking.SoulzStealLinking.Companion.instance
 import me.thatonedevil.soulzStealLinking.SoulzStealLinking.Companion.serverChat

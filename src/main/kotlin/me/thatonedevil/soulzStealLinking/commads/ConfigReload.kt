@@ -1,4 +1,4 @@
-package me.thatonedevil.soulzStealLinking
+package me.thatonedevil.soulzStealLinking.commads
 
 import me.thatonedevil.soulzStealLinking.SoulzStealLinking.Companion.instance
 import org.bukkit.command.Command
