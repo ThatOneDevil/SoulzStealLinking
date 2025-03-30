@@ -144,7 +144,7 @@ class SoulzStealLinking : JavaPlugin() {
 
     override fun onDisable() {
 
-        val threadFactory = ThreadFactoryBuilder().setNameFormat("SoulzStealLinking - Shutdown").build()
+        val threadFactory = ThreadFactoryBuilder().setNameFormat("SoulzStealLinkingShutdown").build()
         val executor = Executors.newSingleThreadExecutor(threadFactory)
 
         try {
