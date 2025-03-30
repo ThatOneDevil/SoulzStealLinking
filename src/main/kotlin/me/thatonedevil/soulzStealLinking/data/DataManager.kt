@@ -46,61 +46,86 @@ object DataManager {
     }
 
     fun loadPlayerData(uuid: UUID): CompletableFuture<LinkingData> = CompletableFuture.supplyAsync {
-        playerDataMap[uuid] ?: run {
-            if (useMySQL) getConnection()?.use { conn ->
-                conn.prepareStatement("SELECT * FROM linking_data WHERE uuid = ?").use { stmt ->
-                    stmt.setString(1, uuid.toString())
-                    stmt.executeQuery().use { rs ->
-                        if (rs.next()) return@supplyAsync LinkingData(
-                            uuid,
-                            rs.getBoolean("linked"),
-                            rs.getString("user_id")
-                        )
-                            .also { cachePlayerData(it) }
-                    }
+        playerDataMap[uuid] ?: fetchPlayerData(uuid) ?: LinkingData(uuid)
+    }
+
+    private fun fetchPlayerData(uuid: UUID): LinkingData? {
+        return if (useMySQL) fetchFromDatabase(uuid) else fetchFromFile(uuid)
+    }
+
+    private fun fetchFromDatabase(uuid: UUID): LinkingData? {
+        return getConnection()?.use { conn ->
+            conn.prepareStatement("SELECT * FROM linking_data WHERE uuid = ?").use { stmt ->
+                stmt.setString(1, uuid.toString())
+                stmt.executeQuery().use { rs ->
+                    if (rs.next()) {
+                        LinkingData(uuid, rs.getBoolean("linked"), rs.getString("user_id")).also { cachePlayerData(it) }
+                    } else null
                 }
-            } else File("$PATH/$uuid.json").takeIf { it.exists() }?.readText()?.let {
-                runCatching { deserialize(it) }.getOrNull()?.also { cachePlayerData(it) }
             }
-            LinkingData(uuid)
         }
     }
 
+    private fun fetchFromFile(uuid: UUID): LinkingData? {
+        val file = File("$PATH/$uuid.json")
+        return if (file.exists()) runCatching { deserialize(file.readText()) }.getOrNull()?.also { cachePlayerData(it) } else null
+    }
 
     fun savePlayerData(playerData: LinkingData): CompletableFuture<Void> = CompletableFuture.runAsync {
         if (playerData.linked) {
-            if (useMySQL) getConnection()?.use { conn ->
-                conn.prepareStatement(
-                    """
-                    INSERT INTO linking_data (uuid, linked, user_id) VALUES (?, ?, ?)
-                    ON DUPLICATE KEY UPDATE linked = VALUES(linked), user_id = VALUES(user_id)
-                """
-                ).use { stmt ->
-                    stmt.setString(1, playerData.uuid.toString())
-                    stmt.setBoolean(2, playerData.linked)
-                    stmt.setString(3, playerData.userId)
-                    stmt.executeUpdate()
-                }
-            } else File("$PATH/${playerData.uuid}.json").writeText(serialize(playerData))
+            if (useMySQL) saveToDatabase(playerData) else saveToFile(playerData)
             cachePlayerData(playerData)
         }
     }
 
+    private fun saveToDatabase(playerData: LinkingData) {
+        getConnection()?.use { conn ->
+            conn.prepareStatement(
+                """
+                INSERT INTO linking_data (uuid, linked, user_id) VALUES (?, ?, ?)
+                ON DUPLICATE KEY UPDATE linked = VALUES(linked), user_id = VALUES(user_id)
+                """
+            ).use { stmt ->
+                stmt.setString(1, playerData.uuid.toString())
+                stmt.setBoolean(2, playerData.linked)
+                stmt.setString(3, playerData.userId)
+                stmt.executeUpdate()
+            }
+        }
+    }
+
+    private fun saveToFile(playerData: LinkingData) {
+        File("$PATH/${playerData.uuid}.json").writeText(serialize(playerData))
+    }
+
     fun cacheAllData(): CompletableFuture<Void> = CompletableFuture.runAsync {
         cachedUserMap.clear()
-        if (useMySQL) getConnection()?.use { conn ->
-            conn.prepareStatement("SELECT * FROM linking_data").use { stmt ->
-                stmt.executeQuery().use { rs ->
-                    while (rs.next()) cachePlayerData(
-                        LinkingData(
-                            UUID.fromString(rs.getString("uuid")),
-                            rs.getBoolean("linked"),
-                            rs.getString("user_id")
-                        )
-                    )
+        if (useMySQL) loadAllFromDatabase() else loadAllFromFiles()
+    }
+
+    private fun loadAllFromDatabase() {
+        val conn = getConnection() ?: return
+
+        conn.use {
+            val stmt = conn.prepareStatement("SELECT * FROM linking_data") ?: return@use
+            stmt.use {
+                val rs = stmt.executeQuery() ?: return
+                rs.use {
+                    while (rs.next()) {
+                        val uuid = UUID.fromString(rs.getString("uuid"))
+                        val linked = rs.getBoolean("linked")
+                        val userId = rs.getString("user_id")
+
+                        cachePlayerData(LinkingData(uuid, linked, userId))
+                    }
                 }
             }
-        } else File(PATH).listFiles { file -> file.extension == "json" }?.forEach {
+        }
+    }
+
+
+    private fun loadAllFromFiles() {
+        File(PATH).listFiles { file -> file.extension == "json" }?.forEach {
             runCatching { deserialize(it.readText()) }.getOrNull()?.let { cachePlayerData(it) }
         }
     }
@@ -115,10 +140,8 @@ object DataManager {
     fun getUUIDFromDiscordId(discordId: String): UUID? = cachedUserMap[discordId]
     fun getPlayerData(uuid: UUID): LinkingData = playerDataMap[uuid] ?: LinkingData(uuid)
 
-
     private fun serialize(playerData: LinkingData): String = GSON.toJson(playerData)
     private fun deserialize(json: String): LinkingData = GSON.fromJson(json, LinkingData::class.java)
-
 
     fun getDebugMessage(): String = buildString {
         appendLine("----- Debug Information -----")

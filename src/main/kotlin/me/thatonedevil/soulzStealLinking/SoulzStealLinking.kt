@@ -132,8 +132,13 @@ class SoulzStealLinking : JavaPlugin() {
         serverChat?.sendMessageEmbeds(embed)?.queue()
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(instance, Runnable {
-            DataManager.cacheAllData()
+            val onlinePlayers = Bukkit.getOnlinePlayers()
+            onlinePlayers.forEach() { player ->
+                DataManager.savePlayerData(DataManager.getPlayerData(player.uniqueId))
+            }
         }, 20L, 20L * 60L * 10L)
+
+        DataManager.cacheAllData()
 
     }
 
@@ -161,7 +166,7 @@ class SoulzStealLinking : JavaPlugin() {
                 DriverManager.getConnection(instance.config.getString("database.jdbcString")).close()
             }))
         } catch (e: Exception) {
-            logger.severe("Failed to shutdown JDA: ${e.message}")
+            logger.severe("Failed to shutdown: ${e.message}")
         }
 
         executor.shutdownNow()
