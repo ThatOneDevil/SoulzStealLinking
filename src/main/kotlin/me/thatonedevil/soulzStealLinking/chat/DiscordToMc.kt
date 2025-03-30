@@ -25,6 +25,10 @@ class DiscordToMc : ListenerAdapter() {
             return
         }
 
+        if (authorID == "1355620686349205504") {
+            return
+        }
+
         val role = event.member?.roles?.firstOrNull()
         val discordName = event.author.effectiveName
         val color = role?.color

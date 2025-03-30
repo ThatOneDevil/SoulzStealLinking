@@ -4,8 +4,9 @@ import io.papermc.paper.event.player.AsyncChatEvent
 import me.thatonedevil.soulzStealLinking.SoulzStealLinking.Companion.instance
 import me.thatonedevil.soulzStealLinking.SoulzStealLinking.Companion.jda
 import me.thatonedevil.soulzStealLinking.SoulzStealLinking.Companion.lpApi
-import net.kyori.adventure.text.Component
+import net.dv8tion.jda.api.entities.WebhookClient
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import java.util.regex.Pattern
@@ -32,31 +33,30 @@ class McToDiscord : Listener {
 
         val rawPrefix = prefix.replace(HEX_COLOR_PATTERN.toRegex(), "").replace(ANY_COLOR_PATTERN.toRegex(), "")
 
-        if (message.contains(Component.text("@everyone"))) {
-            return
-        }
+        val mentionPattern = Pattern.compile("@everyone|@here|<@|!")
 
-        if (message.contains(Component.text("@here"))) {
-            return
-        }
+        val rawMessage = PlainTextComponentSerializer.plainText().serialize(message)
 
-        if (message.contains(Component.text("@here"))) {
-            return
-        }
+        val matcher = mentionPattern.matcher(rawMessage)
 
-        if (message.contains(Component.text("<@"))) {
+        if (matcher.find()) {
+            if (matcher.group() == "!" && player.isOp) {
+                return
+            }
             return
         }
 
         val formattedMessage = configMessage
-            .replace("<player>", player.name)
-            .replace("<prefix>", rawPrefix)
             .replace("<message>", LegacyComponentSerializer.legacyAmpersand().serialize(message))
 
-        jda.getGuildById(1237080924290682953)
-            ?.getTextChannelById(1237120448433487974)
-            ?.sendMessage(formattedMessage)
-            ?.queue()
+        val webhookUrl = instance.config.getString("webhook.url")
+
+        val webhookClient = WebhookClient.createClient(jda, webhookUrl.toString())
+
+        webhookClient.sendMessage(formattedMessage)
+            .setAvatarUrl("http://cravatar.eu/head/${player.uniqueId}.png")
+            .setUsername("$rawPrefix ${player.name}")
+            .queue()
 
     }
 }

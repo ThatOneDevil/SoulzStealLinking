@@ -7,6 +7,10 @@ serverChatChannel: ""
 # Must be set to the role id of the verified role
 verifiedRole: ""
 
+webhook:
+  # Must be set to the webhook url of the server chat channel
+  url: ""
+
 database:
   # type must be set to either MYSQL or FILE
   type: "FILE"
@@ -24,7 +28,7 @@ messages:
   # <prefix> prefix
   # <message> message
   # U can use html markdown for this
-  mcToDiscordMessage: "<prefix> **<player>** » <message>"
+  mcToDiscordMessage: "<message>"
 
   # message sent when a player links their account, use \n for new line
   linkCodeMessage: "Your linking code is &b<code>&f click me to copy!"
