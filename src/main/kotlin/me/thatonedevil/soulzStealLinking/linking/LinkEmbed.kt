@@ -77,44 +77,43 @@ class LinkEmbed : ListenerAdapter() {
                 return
             }
 
-            if (uuid != null) {
-                val playerName = Bukkit.getPlayer(uuid)?.name.toString()
-
-                val embed = EmbedBuilder()
-                    .setTitle("✅ Account Linked Successfully!")
-                    .setColor(Color.GREEN)
-                    .setDescription("Your Discord account has been linked to your Minecraft profile.")
-                    .addField("🔗 Discord: ", "**${event.user.name}**", false)
-                    .addField("🎮 Minecraft: ", "**${playerName}**", false)
-                    .setThumbnail("http://cravatar.eu/head/${uuid}.png")
-                    .setFooter("Linking system by ThatOneDevil", null)
-                    .setTimestamp(java.time.Instant.now())
-                    .build()
-
-                event.replyEmbeds(embed).setEphemeral(true).queue()
-
-                val message = instance.config.getString("messages.linkedBroadcast")!!
-                val formattedMessage = message
-                    .replace("<player>", playerName)
-
-                val miniMessageFormatted = convertLegacyToMiniMessage(formattedMessage)
-
-                val serializedMessage = MiniMessage.miniMessage().deserialize(miniMessageFormatted)
-
-                Bukkit.broadcast(serializedMessage)
-
-                val data = DataManager.getPlayerData(uuid)
-                data.linked = true
-                data.userId = event.user.id
-
-                guild?.addRoleToMember(event.user, verifiedRole!!)?.queue()
-
-                DataManager.savePlayerData(data)
-                LinkCode.removeCode(code)
-            } else {
+            if (uuid == null) {
                 event.reply("❌ Invalid or expired code!").setEphemeral(true).queue()
-
+                return
             }
+
+            val playerName = Bukkit.getPlayer(uuid)?.name.toString()
+
+            val embed = EmbedBuilder()
+                .setTitle("✅ Account Linked Successfully!")
+                .setColor(Color.GREEN)
+                .setDescription("Your Discord account has been linked to your Minecraft profile.")
+                .addField("🔗 Discord: ", "**${event.user.name}**", false)
+                .addField("🎮 Minecraft: ", "**${playerName}**", false)
+                .setThumbnail("http://cravatar.eu/head/${uuid}.png")
+                .setFooter("Linking system by ThatOneDevil", null)
+                .setTimestamp(java.time.Instant.now())
+                .build()
+
+            event.replyEmbeds(embed).setEphemeral(true).queue()
+
+            val message = instance.config.getString("messages.linkedBroadcast")!!
+            val formattedMessage = message
+                .replace("<player>", playerName)
+
+            val miniMessageFormatted = convertLegacyToMiniMessage(formattedMessage)
+            val serializedMessage = MiniMessage.miniMessage().deserialize(miniMessageFormatted)
+
+            Bukkit.broadcast(serializedMessage)
+
+            val data = DataManager.getPlayerData(uuid)
+            data.linked = true
+            data.userId = event.user.id
+
+            guild?.addRoleToMember(event.user, verifiedRole!!)?.queue()
+
+            DataManager.savePlayerData(data)
+            LinkCode.removeCode(code)
         }
     }
 }

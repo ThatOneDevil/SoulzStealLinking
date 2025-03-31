@@ -143,7 +143,6 @@ class SoulzStealLinking : JavaPlugin() {
     }
 
     override fun onDisable() {
-
         val threadFactory = ThreadFactoryBuilder().setNameFormat("SoulzStealLinkingShutdown").build()
         val executor = Executors.newSingleThreadExecutor(threadFactory)
 
@@ -160,15 +159,20 @@ class SoulzStealLinking : JavaPlugin() {
 
                 Bukkit.getScheduler().runTaskLaterAsynchronously(instance, Runnable {
                     updateChannelTopic(false)
+                    serverChat?.sendMessageEmbeds(embed)?.queue()
                 }, 20L)
 
-                serverChat?.sendMessageEmbeds(embed)?.queue()
                 DriverManager.getConnection(instance.config.getString("database.jdbcString")).close()
             }))
         } catch (e: Exception) {
             logger.severe("Failed to shutdown: ${e.message}")
         }
 
+        jda.shutdown();
+        if (!jda.awaitShutdown(java.time.Duration.ofSeconds(10))) {
+            jda.shutdownNow(); // Cancel all remaining requests
+            jda.awaitShutdown(); // Wait until shutdown is complete (indefinitely)
+        }
         executor.shutdownNow()
     }
 
