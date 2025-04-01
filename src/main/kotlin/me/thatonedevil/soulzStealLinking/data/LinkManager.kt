@@ -31,5 +31,8 @@ class LinkManager(uuid: UUID) {
         }
     }
 
+    fun delete() {
+        DataManager.deletePlayerData(data.uuid)
+    }
 
 }

@@ -157,10 +157,8 @@ class SoulzStealLinking : JavaPlugin() {
                     .setAuthor("Server stopped ❌", null, null)
                     .build()
 
-                Bukkit.getScheduler().runTaskLaterAsynchronously(instance, Runnable {
-                    updateChannelTopic(false)
-                    serverChat?.sendMessageEmbeds(embed)?.queue()
-                }, 20L)
+                updateChannelTopic(false)
+                serverChat?.sendMessageEmbeds(embed)?.queue()
 
                 DriverManager.getConnection(instance.config.getString("database.jdbcString")).close()
             }))
