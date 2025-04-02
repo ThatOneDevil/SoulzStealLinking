@@ -16,6 +16,10 @@ class McToDiscord : Listener {
 
     @EventHandler
     fun asyncChatEvent(event: AsyncChatEvent) {
+        if (event.isCancelled){
+            return
+        }
+
         val player = event.player
         val message = event.message()
 
