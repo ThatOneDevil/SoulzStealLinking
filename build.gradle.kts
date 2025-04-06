@@ -25,8 +25,6 @@ dependencies {
 
     implementation("net.dv8tion:JDA:5.3.0")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("net.kyori:adventure-text-serializer-legacy:4.19.0")
-
 }
 
 val targetJavaVersion = 21
