@@ -2,3 +2,6 @@
 /.gradle/
 /build/
 /build/classes/kotlin/main/
+/.idea/
+/.idea_modules/
+/bin/
