@@ -3,7 +3,8 @@ package me.thatonedevil.soulzStealLinking.data
 import com.google.gson.Gson
 import me.thatonedevil.soulzStealLinking.SoulzStealLinking.Companion.instance
 import java.io.File
-import java.sql.*
+import java.sql.Connection
+import java.sql.DriverManager
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
@@ -29,14 +30,18 @@ object DataManager {
     }
 
     private fun createTable() {
-        getConnection()?.use { it.prepareStatement("""
+        getConnection()?.use {
+            it.prepareStatement(
+                """
             CREATE TABLE IF NOT EXISTS linking_data (
                 uuid CHAR(36) PRIMARY KEY,
                 name CHAR(50) NOT NULL,
                 linked BOOLEAN NOT NULL DEFAULT FALSE,
                 user_id VARCHAR(50) NOT NULL
             )
-        """).executeUpdate() }
+        """
+            ).executeUpdate()
+        }
     }
 
     fun loadPlayerData(uuid: UUID): CompletableFuture<LinkingData> = CompletableFuture.supplyAsync {
@@ -83,11 +88,13 @@ object DataManager {
 
     private fun saveToDatabase(playerData: LinkingData) {
         getConnection()?.use { conn ->
-            conn.prepareStatement("""
+            conn.prepareStatement(
+                """
                 INSERT INTO linking_data (uuid, name, linked, user_id) 
                 VALUES (?, ?, ?, ?) 
                 ON DUPLICATE KEY UPDATE name = VALUES(name), linked = VALUES(linked), user_id = VALUES(user_id)
-            """).use { stmt ->
+            """
+            ).use { stmt ->
                 stmt.setString(1, playerData.uuid.toString())
                 stmt.setString(2, playerData.name)
                 stmt.setBoolean(3, playerData.linked)

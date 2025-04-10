@@ -15,7 +15,6 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import java.awt.Color
 import java.util.*
-import kotlin.collections.HashMap
 
 class PlayerJoinEvents : Listener {
 
@@ -29,7 +28,7 @@ class PlayerJoinEvents : Listener {
 
         val embed = EmbedBuilder()
             .setColor(Color.GREEN)
-            .setAuthor("${player.name} joined the server!", null, "http://cravatar.eu/head/${player.uniqueId}.png")
+            .setAuthor("${player.name} joined the server!", null, "https://cravatar.eu/head/${player.uniqueId}.png")
             .setTimestamp(java.time.Instant.now())
             .build()
 
@@ -52,7 +51,7 @@ class PlayerJoinEvents : Listener {
 
         val embed = EmbedBuilder()
             .setColor(Color.RED)
-            .setAuthor("${player.name} left the server!", null, "http://cravatar.eu/head/${player.uniqueId}.png")
+            .setAuthor("${player.name} left the server!", null, "https://cravatar.eu/head/${player.uniqueId}.png")
             .setDescription("**Time played:** ``$playTimeFormatted``\n**IP: soulzsteal.minehut.gg**")
             .build()
 

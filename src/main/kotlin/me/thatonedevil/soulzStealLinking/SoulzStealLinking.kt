@@ -132,7 +132,7 @@ class SoulzStealLinking : JavaPlugin() {
         serverChat?.sendMessageEmbeds(embed)?.queue()
         Bukkit.getScheduler().runTaskTimerAsynchronously(instance, Runnable {
             val onlinePlayers = Bukkit.getOnlinePlayers()
-            onlinePlayers.forEach() { player ->
+            onlinePlayers.forEach { player ->
                 DataManager.savePlayerData(DataManager.getPlayerData(player.uniqueId))
             }
         }, 20L, 20L * 60L * 10L)
@@ -164,10 +164,10 @@ class SoulzStealLinking : JavaPlugin() {
             logger.severe("Failed to shutdown: ${e.message}")
         }
 
-        jda.shutdown();
+        jda.shutdown()
         if (!jda.awaitShutdown(java.time.Duration.ofSeconds(10))) {
-            jda.shutdownNow(); // Cancel all remaining requests
-            jda.awaitShutdown(); // Wait until shutdown is complete (indefinitely)
+            jda.shutdownNow() // Cancel all remaining requests
+            jda.awaitShutdown() // Wait until shutdown is complete (indefinitely)
         }
         executor.shutdownNow()
     }

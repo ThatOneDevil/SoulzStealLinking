@@ -16,7 +16,7 @@ class McToDiscord : Listener {
 
     @EventHandler
     fun asyncChatEvent(event: AsyncChatEvent) {
-        if (event.isCancelled){
+        if (event.isCancelled) {
             return
         }
 
