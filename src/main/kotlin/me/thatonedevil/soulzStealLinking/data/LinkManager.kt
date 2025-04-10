@@ -2,6 +2,7 @@ package me.thatonedevil.soulzStealLinking.data
 
 import java.util.*
 
+// this class is normally used for skript reflection
 class LinkManager(uuid: UUID) {
 
     private val data = DataManager.getPlayerData(uuid)

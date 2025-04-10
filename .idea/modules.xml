@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/SoulzStealLinking.main.iml" filepath="$PROJECT_DIR$/.idea/modules/SoulzStealLinking.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/SoulzStealLinking.test.iml" filepath="$PROJECT_DIR$/.idea/modules/SoulzStealLinking.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/me.thatonedevil.SoulzStealLinking.main.iml" filepath="$PROJECT_DIR$/.idea/modules/me.thatonedevil.SoulzStealLinking.main.iml" />
     </modules>
   </component>
 </project>

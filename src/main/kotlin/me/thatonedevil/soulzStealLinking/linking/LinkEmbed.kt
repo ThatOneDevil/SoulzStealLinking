@@ -1,6 +1,5 @@
 package me.thatonedevil.soulzStealLinking.linking
 
-import me.thatonedevil.soulzStealLinking.PlayerLinkedEvent
 import me.thatonedevil.soulzStealLinking.SoulzStealLinking.Companion.guild
 import me.thatonedevil.soulzStealLinking.SoulzStealLinking.Companion.instance
 import me.thatonedevil.soulzStealLinking.SoulzStealLinking.Companion.verifiedRole
@@ -20,7 +19,6 @@ import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
 import java.awt.Color
 
-
 class LinkEmbed : ListenerAdapter() {
 
     override fun onSlashCommandInteraction(event: SlashCommandInteractionEvent) {
@@ -33,7 +31,7 @@ class LinkEmbed : ListenerAdapter() {
             val embed = EmbedBuilder()
                 .setTitle("🔗 Link Your Minecraft Account")
                 .setColor(Color(46, 204, 113)) // Nice green color for linking success
-                .setThumbnail("https://media.discordapp.net/attachments/1069014782524526643/1345116633760534543/soulz-01.png?ex=67d332fc&is=67d1e17c&hm=c1f59c6f1bce71e7d3a23c207bb2387084fe80fed0b06d5dfd2a81ae227a6d55&=&format=webp&quality=lossless&width=1149&height=813")
+                .setThumbnail("https://cdn.discordapp.com/avatars/1237115078038524015/dc6e4719b07fe06cffdc6ca68ead806f.webp?size=100")
                 .setDescription(
                     "⚡ **Easily connect your Discord & Minecraft accounts!**\n\n" +
                             "Follow the steps below to complete the linking process."
@@ -82,9 +80,14 @@ class LinkEmbed : ListenerAdapter() {
                 event.reply("❌ Invalid or expired code!").setEphemeral(true).queue()
                 return
             }
-
             val player = Bukkit.getPlayer(uuid)
-            val playerName = player?.name.toString()
+
+            if (player == null) {
+                event.reply("❌ Player not found!").setEphemeral(true).queue()
+                return
+            }
+
+            val playerName = player.name
 
             val embed = EmbedBuilder()
                 .setTitle("✅ Account Linked Successfully!")
@@ -92,7 +95,7 @@ class LinkEmbed : ListenerAdapter() {
                 .setDescription("Your Discord account has been linked to your Minecraft profile.")
                 .addField("🔗 Discord: ", "**${event.user.name}**", false)
                 .addField("🎮 Minecraft: ", "**${playerName}**", false)
-                .setThumbnail("http://cravatar.eu/head/${uuid}.png")
+                .setThumbnail("https://cravatar.eu/head/${uuid}.png")
                 .setFooter("Linking system by ThatOneDevil", null)
                 .setTimestamp(java.time.Instant.now())
                 .build()
@@ -111,9 +114,6 @@ class LinkEmbed : ListenerAdapter() {
             val data = DataManager.getPlayerData(uuid)
             data.linked = true
             data.userId = event.user.id
-
-            val playerLinkedEvent = PlayerLinkedEvent(player!!, event.user.id, true)
-            Bukkit.getPluginManager().callEvent(playerLinkedEvent)
 
             guild?.addRoleToMember(event.user, verifiedRole!!)?.queue()
 

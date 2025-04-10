@@ -17,15 +17,12 @@ class DiscordToMc : ListenerAdapter() {
         val channelID = event.channel.id
         val authorID = event.author.id
 
-        if (authorID == "1237115078038524015") {
+        // webhook id
+        if (authorID == "1355620686349205504" || event.author.isBot) {
             return
         }
 
         if (channelID != serverChat?.id) {
-            return
-        }
-
-        if (authorID == "1355620686349205504") {
             return
         }
 

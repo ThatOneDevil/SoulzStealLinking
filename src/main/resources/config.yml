@@ -36,7 +36,7 @@ messages:
   # <player> player name, use \n for new line
   linkedBroadcast: "<color:#F11642>ꜱᴏᴜʟᴢꜱᴛᴇᴀʟ &8» <color:#F11642><player> <color:#FFA2B9>has successfully linked to discord! <color:#F11642>&o(/link)"
 
-  # error message when a player tries to link their account but they are already linked
+  # error message when a player tries to link their account, but they are already linked
   linkedError: "<color:#F11642>ꜱᴏᴜʟᴢꜱᴛᴇᴀʟ &8» <color:#FFA2B9>You are already linked to discord!"
 
   linkCodeExpired: "<color:#F11642>ꜱᴏᴜʟᴢꜱᴛᴇᴀʟ &8» <color:#FFA2B9>Your linking code has expired! Please use /link to get a new one!"

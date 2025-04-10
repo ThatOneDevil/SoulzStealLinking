@@ -58,7 +58,7 @@ class McToDiscord : Listener {
         val webhookClient = WebhookClient.createClient(jda, webhookUrl.toString())
 
         webhookClient.sendMessage(formattedMessage)
-            .setAvatarUrl("http://cravatar.eu/head/${player.uniqueId}.png")
+            .setAvatarUrl("https://cravatar.eu/head/${player.uniqueId}.png")
             .setUsername("$rawPrefix ${player.name}")
             .queue()
 
