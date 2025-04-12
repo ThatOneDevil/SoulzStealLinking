@@ -6,11 +6,6 @@ authors: [ ThatOneDevil ]
 website: https://thatonedevil.github.io/
 
 commands:
-  link:
-    description: get linking code
   configReload:
     description: reload config
     permission: linking.configreload
-  debug:
-    description: debug
-    permission: linking.debug

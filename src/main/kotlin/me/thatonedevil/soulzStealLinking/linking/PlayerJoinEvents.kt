@@ -1,12 +1,9 @@
 package me.thatonedevil.soulzStealLinking.linking
 
+import me.thatonedevil.soulzStealLinking.JdaManager.jdaEnabled
+import me.thatonedevil.soulzStealLinking.JdaManager.serverChat
+import me.thatonedevil.soulzStealLinking.JdaManager.updateChannelTopic
 import me.thatonedevil.soulzStealLinking.SoulzStealLinking.Companion.instance
-import me.thatonedevil.soulzStealLinking.SoulzStealLinking.Companion.serverChat
-import me.thatonedevil.soulzStealLinking.SoulzStealLinking.Companion.updateChannelTopic
-import me.thatonedevil.soulzStealLinking.data.DataManager
-import me.thatonedevil.soulzStealLinking.data.DataManager.getPlayerData
-import me.thatonedevil.soulzStealLinking.data.DataManager.loadPlayerData
-import me.thatonedevil.soulzStealLinking.data.DataManager.savePlayerData
 import net.dv8tion.jda.api.EmbedBuilder
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
@@ -23,8 +20,9 @@ class PlayerJoinEvents : Listener {
 
     @EventHandler
     fun onPlayerJoinEvent(event: PlayerJoinEvent) {
+        if (!jdaEnabled) return
+
         val player = event.player
-        loadPlayerData(player.uniqueId)
 
         val embed = EmbedBuilder()
             .setColor(Color.GREEN)
@@ -43,8 +41,9 @@ class PlayerJoinEvents : Listener {
 
     @EventHandler
     fun onPlayerQuitEvent(event: PlayerQuitEvent) {
+        if (!jdaEnabled) return
+
         val player = event.player
-        savePlayerData(getPlayerData(player.uniqueId))
 
         val playTimeMillis = System.currentTimeMillis() - (timejoined[player.uniqueId] ?: System.currentTimeMillis())
         val playTimeFormatted = formatPlayTime(playTimeMillis)
@@ -61,7 +60,6 @@ class PlayerJoinEvents : Listener {
         }, 20L)
 
         timejoined.remove(player.uniqueId)
-        DataManager.removePLayerData(player.uniqueId)
 
     }
 

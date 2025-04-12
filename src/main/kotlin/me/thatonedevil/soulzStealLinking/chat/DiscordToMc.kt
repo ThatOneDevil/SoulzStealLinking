@@ -1,7 +1,9 @@
 package me.thatonedevil.soulzStealLinking.chat
 
+import me.thatonedevil.soulzStealLinking.JdaManager.isReady
+import me.thatonedevil.soulzStealLinking.JdaManager.jdaEnabled
+import me.thatonedevil.soulzStealLinking.JdaManager.serverChat
 import me.thatonedevil.soulzStealLinking.SoulzStealLinking.Companion.instance
-import me.thatonedevil.soulzStealLinking.SoulzStealLinking.Companion.serverChat
 import me.thatonedevil.soulzStealLinking.Utils.convertLegacyToMiniMessage
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
@@ -13,6 +15,9 @@ import org.bukkit.Bukkit
 class DiscordToMc : ListenerAdapter() {
 
     override fun onMessageReceived(event: MessageReceivedEvent) {
+        if (!jdaEnabled) return
+
+
         val text = event.message.contentRaw
         val channelID = event.channel.id
         val authorID = event.author.id

@@ -1,8 +1,9 @@
 package me.thatonedevil.soulzStealLinking.chat
 
 import io.papermc.paper.event.player.AsyncChatEvent
+import me.thatonedevil.soulzStealLinking.JdaManager.jda
+import me.thatonedevil.soulzStealLinking.JdaManager.jdaEnabled
 import me.thatonedevil.soulzStealLinking.SoulzStealLinking.Companion.instance
-import me.thatonedevil.soulzStealLinking.SoulzStealLinking.Companion.jda
 import me.thatonedevil.soulzStealLinking.SoulzStealLinking.Companion.lpApi
 import net.dv8tion.jda.api.entities.WebhookClient
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
@@ -16,9 +17,8 @@ class McToDiscord : Listener {
 
     @EventHandler
     fun asyncChatEvent(event: AsyncChatEvent) {
-        if (event.isCancelled) {
-            return
-        }
+        if (!jdaEnabled) return
+
 
         val player = event.player
         val message = event.message()
