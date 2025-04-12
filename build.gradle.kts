@@ -25,6 +25,7 @@ dependencies {
 
     implementation("net.dv8tion:JDA:5.3.0")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("ch.qos.logback:logback-classic:1.5.6")
 }
 
 val targetJavaVersion = 21

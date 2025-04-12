@@ -1,5 +1,6 @@
 package me.thatonedevil.soulzStealLinking.linking
 
+import me.thatonedevil.soulzStealLinking.PlayerLinkedEvent
 import me.thatonedevil.soulzStealLinking.SoulzStealLinking.Companion.guild
 import me.thatonedevil.soulzStealLinking.SoulzStealLinking.Companion.instance
 import me.thatonedevil.soulzStealLinking.SoulzStealLinking.Companion.verifiedRole
@@ -17,6 +18,7 @@ import net.dv8tion.jda.api.interactions.components.text.TextInputStyle
 import net.dv8tion.jda.api.interactions.modals.Modal
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 import java.awt.Color
 
 class LinkEmbed : ListenerAdapter() {
@@ -115,10 +117,15 @@ class LinkEmbed : ListenerAdapter() {
             data.linked = true
             data.userId = event.user.id
 
+            player.uniqueId
             guild?.addRoleToMember(event.user, verifiedRole!!)?.queue()
 
             DataManager.savePlayerData(data)
             LinkCode.removeCode(code)
+
+            Bukkit.getScheduler().runTask(instance, Runnable {
+                PlayerLinkedEvent(player,playerName, true, event.user.id).callEvent()
+            })
         }
     }
 }

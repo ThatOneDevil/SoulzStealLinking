@@ -6,11 +6,10 @@ import org.bukkit.event.HandlerList
 
 class PlayerLinkedEvent(
     val player: Player,
-    val discordId: String,
-    val isLinked: Boolean
+    var name: String,
+    var linked: Boolean,
+    var userId: String
 ) : Event() {
-
-    override fun getHandlers(): HandlerList = handlerList
 
     companion object {
         @JvmStatic
@@ -19,4 +18,6 @@ class PlayerLinkedEvent(
         @JvmStatic
         fun getHandlerList(): HandlerList = handlerList
     }
+
+    override fun getHandlers(): HandlerList = handlerList
 }
