@@ -7,6 +7,8 @@ serverChatChannel: ""
 # Must be set to the role id of the verified role
 verifiedRole: ""
 
+jdaEnabled: true
+
 webhook:
   # Must be set to the webhook url of the server chat channel
   url: ""
@@ -23,3 +25,7 @@ messages:
   # <message> message
   # U can use html markdown for this
   mcToDiscordMessage: "<message>"
+
+  # <badWord> bad word that was blocked
+  chatFilter:
+    blockedMessage: "<color:#F11642>&l▍ SoulNetwork &r<color:#EF5B80>The message was blocked because it contains <color:#F11642><badWord>"

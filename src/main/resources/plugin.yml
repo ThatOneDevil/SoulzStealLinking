@@ -1,9 +1,10 @@
-name: SoulzStealLinking
+name: SoulNetworkPlugin
 version: '1.0'
-main: me.thatonedevil.soulzStealLinking.SoulzStealLinking
+main: me.thatonedevil.soulNetworkPlugin.SoulNetworkPlugin
 api-version: '1.21'
 authors: [ ThatOneDevil ]
 website: https://thatonedevil.github.io/
+
 
 commands:
   configReload:

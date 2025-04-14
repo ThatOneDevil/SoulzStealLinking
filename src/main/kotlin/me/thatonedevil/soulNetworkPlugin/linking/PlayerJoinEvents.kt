@@ -1,9 +1,9 @@
-package me.thatonedevil.soulzStealLinking.linking
+package me.thatonedevil.soulNetworkPlugin.linking
 
-import me.thatonedevil.soulzStealLinking.JdaManager.jdaEnabled
-import me.thatonedevil.soulzStealLinking.JdaManager.serverChat
-import me.thatonedevil.soulzStealLinking.JdaManager.updateChannelTopic
-import me.thatonedevil.soulzStealLinking.SoulzStealLinking.Companion.instance
+import me.thatonedevil.soulNetworkPlugin.JdaManager.jdaEnabled
+import me.thatonedevil.soulNetworkPlugin.JdaManager.serverChat
+import me.thatonedevil.soulNetworkPlugin.JdaManager.updateChannelTopic
+import me.thatonedevil.soulNetworkPlugin.SoulNetworkPlugin.Companion.instance
 import net.dv8tion.jda.api.EmbedBuilder
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
@@ -15,13 +15,12 @@ import java.util.*
 
 class PlayerJoinEvents : Listener {
 
-    private val timejoined: HashMap<UUID, Long> = hashMapOf()
+    private val timeJoined: HashMap<UUID, Long> = hashMapOf()
 
 
     @EventHandler
     fun onPlayerJoinEvent(event: PlayerJoinEvent) {
         if (!jdaEnabled) return
-
         val player = event.player
 
         val embed = EmbedBuilder()
@@ -35,7 +34,7 @@ class PlayerJoinEvents : Listener {
             updateChannelTopic()
         }, 20L)
 
-        timejoined[player.uniqueId] = System.currentTimeMillis()
+        timeJoined[player.uniqueId] = System.currentTimeMillis()
 
     }
 
@@ -45,7 +44,7 @@ class PlayerJoinEvents : Listener {
 
         val player = event.player
 
-        val playTimeMillis = System.currentTimeMillis() - (timejoined[player.uniqueId] ?: System.currentTimeMillis())
+        val playTimeMillis = System.currentTimeMillis() - (timeJoined[player.uniqueId] ?: System.currentTimeMillis())
         val playTimeFormatted = formatPlayTime(playTimeMillis)
 
         val embed = EmbedBuilder()
@@ -59,7 +58,7 @@ class PlayerJoinEvents : Listener {
             updateChannelTopic()
         }, 20L)
 
-        timejoined.remove(player.uniqueId)
+        timeJoined.remove(player.uniqueId)
 
     }
 

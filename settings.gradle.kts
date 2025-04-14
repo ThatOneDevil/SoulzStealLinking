@@ -1,1 +1,1 @@
-rootProject.name = "SoulzStealLinking"
+rootProject.name = "SoulNetworkPlugin"

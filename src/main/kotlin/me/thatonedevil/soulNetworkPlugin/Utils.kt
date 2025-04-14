@@ -1,9 +1,12 @@
-package me.thatonedevil.soulzStealLinking
+package me.thatonedevil.soulNetworkPlugin
+
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.minimessage.MiniMessage
 
 
 object Utils {
 
-    fun convertLegacyToMiniMessage(input: String): String {
+    fun convertLegacyToMiniMessage(input: String): Component {
         val replacements = mapOf(
             "&0" to "<black>", "&1" to "<dark_blue>", "&2" to "<dark_green>", "&3" to "<dark_aqua>",
             "&4" to "<dark_red>", "&5" to "<dark_purple>", "&6" to "<gold>", "&7" to "<gray>",
@@ -15,9 +18,11 @@ object Utils {
 
         val regex = Regex(replacements.keys.joinToString("|") { Regex.escape(it) })
 
-        return regex.replace(input) { matchResult ->
+        val convertedInput = regex.replace(input) { matchResult ->
             replacements[matchResult.value] ?: matchResult.value
         }
+
+        return MiniMessage.miniMessage().deserialize(convertedInput)
     }
 
 }

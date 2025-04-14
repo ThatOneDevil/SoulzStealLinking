@@ -1,8 +1,8 @@
-package me.thatonedevil.soulzStealLinking
+package me.thatonedevil.soulNetworkPlugin
 
-import me.thatonedevil.soulzStealLinking.SoulzStealLinking.Companion.instance
-import me.thatonedevil.soulzStealLinking.SoulzStealLinking.Companion.soulLogger
-import me.thatonedevil.soulzStealLinking.chat.DiscordToMc
+import me.thatonedevil.soulNetworkPlugin.SoulNetworkPlugin.Companion.instance
+import me.thatonedevil.soulNetworkPlugin.SoulNetworkPlugin.Companion.soulLogger
+import me.thatonedevil.soulNetworkPlugin.chat.DiscordToMc
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
@@ -22,14 +22,21 @@ import java.util.concurrent.CompletableFuture
 
 object JdaManager {
     lateinit var jda: JDA
-    var jdaEnabled: Boolean = true
-    var isReady: Boolean = false
+    var jdaEnabled: Boolean = instance.config.getBoolean("jdaEnabled")
+    private var isReady: Boolean = false
     private var guild: Guild? = null
     var serverChat: TextChannel? = null
     private var verifiedRole: Role? = null
 
-    fun init(token: String) {
+    fun init() {
         if (!jdaEnabled) return
+
+        val token = instance.config.getString("token")
+        if (token.isNullOrEmpty()) {
+            instance.logger.severe("Missing bot token in config.yml")
+            instance.server.pluginManager.disablePlugin(instance)
+            return
+        }
 
         CompletableFuture.runAsync {
             runCatching {
@@ -44,7 +51,6 @@ object JdaManager {
                 isReady = true
                 validateJDAConfig()
                 registerCommands()
-
                 sendStartupEmbed()
             }.onFailure {
                 soulLogger!!.severe("Failed to init JDA: ${it.message}")

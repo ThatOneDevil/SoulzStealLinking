@@ -1,9 +1,11 @@
-package me.thatonedevil.soulzStealLinking
+package me.thatonedevil.soulNetworkPlugin
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder
-import me.thatonedevil.soulzStealLinking.chat.McToDiscord
-import me.thatonedevil.soulzStealLinking.commads.ConfigReload
-import me.thatonedevil.soulzStealLinking.linking.PlayerJoinEvents
+import me.thatonedevil.soulNetworkPlugin.chat.McToDiscord
+import me.thatonedevil.soulNetworkPlugin.chatfilter.ChatFilter
+import me.thatonedevil.soulNetworkPlugin.commads.ConfigReload
+import me.thatonedevil.soulNetworkPlugin.linking.PlayerJoinEvents
+import me.thatonedevil.soulNetworkPlugin.linking.PluginMessageListener
 import net.luckperms.api.LuckPerms
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -15,42 +17,40 @@ import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import java.util.logging.Logger
 
-class SoulzStealLinking : JavaPlugin() {
+class SoulNetworkPlugin : JavaPlugin() {
 
     companion object {
-        lateinit var instance: JavaPlugin
+        lateinit var instance: SoulNetworkPlugin
         var lpApi: LuckPerms? = null
         var soulLogger: Logger? = null
+        var chatFilter: ChatFilter? = null
     }
 
     override fun onEnable() {
         instance = this
         soulLogger = logger
 
+        chatFilter = ChatFilter()
+
         config.options().copyDefaults(true)
         saveDefaultConfig()
         reloadConfig()
-
-        val token = config.getString("token")
-        if (token.isNullOrEmpty()) {
-            logger.severe("Missing bot token in config.yml")
-            server.pluginManager.disablePlugin(this)
-            return
-
-        }
 
         val provider = Bukkit.getServicesManager().getRegistration(LuckPerms::class.java)
         if (provider != null) {
             lpApi = provider.provider
         }
 
-        JdaManager.init(token)
+        JdaManager.init()
 
         server.pluginManager.registerEvents(McToDiscord(), this)
         server.pluginManager.registerEvents(PlayerJoinEvents(), this)
+        server.messenger.registerIncomingPluginChannel(this, "soulzproxy:main", PluginMessageListener());
+        server.messenger.registerOutgoingPluginChannel(this, "soulzproxy:main");
+
 
         getCommand("configReload")?.setExecutor(ConfigReload())
-
+        chatFilter?.reloadBadWords()
 
     }
 
@@ -68,6 +68,9 @@ class SoulzStealLinking : JavaPlugin() {
 
         val item = ItemStack(Material.STONE)
         item.itemMeta.addEnchant(Enchantment.SHARPNESS, 1, false)
+
+        server.messenger.unregisterIncomingPluginChannel(this)
+        server.messenger.unregisterOutgoingPluginChannel(this)
 
         JdaManager.shutdown()
         executor.shutdownNow()

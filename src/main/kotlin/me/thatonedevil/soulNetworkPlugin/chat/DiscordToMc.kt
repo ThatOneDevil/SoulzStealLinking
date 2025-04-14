@@ -1,10 +1,9 @@
-package me.thatonedevil.soulzStealLinking.chat
+package me.thatonedevil.soulNetworkPlugin.chat
 
-import me.thatonedevil.soulzStealLinking.JdaManager.isReady
-import me.thatonedevil.soulzStealLinking.JdaManager.jdaEnabled
-import me.thatonedevil.soulzStealLinking.JdaManager.serverChat
-import me.thatonedevil.soulzStealLinking.SoulzStealLinking.Companion.instance
-import me.thatonedevil.soulzStealLinking.Utils.convertLegacyToMiniMessage
+import me.thatonedevil.soulNetworkPlugin.JdaManager.jdaEnabled
+import me.thatonedevil.soulNetworkPlugin.JdaManager.serverChat
+import me.thatonedevil.soulNetworkPlugin.SoulNetworkPlugin.Companion.instance
+import me.thatonedevil.soulNetworkPlugin.Utils.convertLegacyToMiniMessage
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.kyori.adventure.text.minimessage.MiniMessage
@@ -16,7 +15,6 @@ class DiscordToMc : ListenerAdapter() {
 
     override fun onMessageReceived(event: MessageReceivedEvent) {
         if (!jdaEnabled) return
-
 
         val text = event.message.contentRaw
         val channelID = event.channel.id
@@ -45,11 +43,7 @@ class DiscordToMc : ListenerAdapter() {
             .replace("<discordName>", discordName)
             .replace("<text>", text)
 
-        val miniMessageFormatted = convertLegacyToMiniMessage(formattedMessage)
-
-        val serializedMessage = MiniMessage.miniMessage().deserialize(miniMessageFormatted)
-
-        Bukkit.broadcast(serializedMessage)
+        Bukkit.broadcast(convertLegacyToMiniMessage(formattedMessage))
 
     }
 
