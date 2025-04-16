@@ -2,7 +2,6 @@ package me.thatonedevil.soulNetworkPlugin.linking
 
 import me.thatonedevil.soulNetworkPlugin.JdaManager.jdaEnabled
 import me.thatonedevil.soulNetworkPlugin.JdaManager.serverChat
-import me.thatonedevil.soulNetworkPlugin.JdaManager.updateChannelTopic
 import me.thatonedevil.soulNetworkPlugin.SoulNetworkPlugin.Companion.instance
 import net.dv8tion.jda.api.EmbedBuilder
 import org.bukkit.Bukkit
@@ -31,7 +30,6 @@ class PlayerJoinEvents : Listener {
 
         Bukkit.getScheduler().runTaskLaterAsynchronously(instance, Runnable {
             serverChat?.sendMessageEmbeds(embed)?.queue()
-            updateChannelTopic()
         }, 20L)
 
         timeJoined[player.uniqueId] = System.currentTimeMillis()
@@ -55,7 +53,6 @@ class PlayerJoinEvents : Listener {
 
         Bukkit.getScheduler().runTaskLaterAsynchronously(instance, Runnable {
             serverChat?.sendMessageEmbeds(embed)?.queue()
-            updateChannelTopic()
         }, 20L)
 
         timeJoined.remove(player.uniqueId)

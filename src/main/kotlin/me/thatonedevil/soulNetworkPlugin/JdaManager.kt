@@ -1,24 +1,26 @@
 package me.thatonedevil.soulNetworkPlugin
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder
 import me.thatonedevil.soulNetworkPlugin.SoulNetworkPlugin.Companion.instance
 import me.thatonedevil.soulNetworkPlugin.SoulNetworkPlugin.Companion.soulLogger
 import me.thatonedevil.soulNetworkPlugin.chat.DiscordToMc
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
-import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Role
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel
+import net.dv8tion.jda.api.events.session.ShutdownEvent
+import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.api.interactions.commands.OptionType
 import net.dv8tion.jda.api.interactions.commands.build.Commands
 import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.MemberCachePolicy
-import org.bukkit.Bukkit
 import java.awt.Color
-import java.time.Duration
-import java.util.concurrent.CompletableFuture
+import java.util.concurrent.*
+import java.util.function.Consumer
+
 
 object JdaManager {
     lateinit var jda: JDA
@@ -62,15 +64,42 @@ object JdaManager {
         if (!jdaEnabled) return
         if (!isReady) return
 
-        sendShutdownEmbed()
-        updateChannelTopic(false)
+        val threadFactory = ThreadFactoryBuilder().setNameFormat("SoulNetworkPluginShutdown").build()
+        val executor = Executors.newSingleThreadExecutor(threadFactory)
 
-        jda.shutdown()
-        if (!jda.awaitShutdown(Duration.ofSeconds(10))) {
-            jda.shutdownNow()
-            jda.awaitShutdown()
+        try {
+            if (!isReady || jda.status != JDA.Status.CONNECTED || !jdaEnabled) {
+                logError("JDA is not ready, skipping shutdown")
+                return
+            }
+
+            executor.invokeAll(listOf(Callable {
+                jda.eventManager.registeredListeners.forEach(Consumer { listener: Any? ->
+                    jda.eventManager.unregister(
+                        listener!!
+                    )
+                })
+
+                val shutdownTask = CompletableFuture<Void?>()
+                jda.addEventListener(object : ListenerAdapter() {
+                    override fun onShutdown(event: ShutdownEvent) {
+                        shutdownTask.complete(null)
+                    }
+                })
+                jda.shutdownNow()
+                try {
+                    shutdownTask[5, TimeUnit.SECONDS]
+                } catch (e: TimeoutException) {
+                    logError("JDA took too long to shut down, skipping")
+                }
+
+            }), 15, TimeUnit.SECONDS);
+        } catch (e: Exception) {
+            logError("$e")
         }
+        executor.shutdownNow()
     }
+
 
     private fun validateJDAConfig() {
         if (!jdaEnabled) return
@@ -97,17 +126,6 @@ object JdaManager {
             Commands.slash("userinfo", "Shows user info")
                 .addOptions(OptionData(OptionType.USER, "user", "The user to show info for").setRequired(true))
         )?.queue()
-    }
-
-    fun updateChannelTopic(online: Boolean = true) {
-        if (!jdaEnabled) return
-
-        if (!isReady || serverChat == null) return
-
-        val topic = if (online) "Players: ${Bukkit.getOnlinePlayers().size}" else "Server Offline"
-        jda.presence.activity = Activity.watching(topic)
-
-        soulLogger?.info("Updated channel topic to: $topic")
     }
 
     private fun sendStartupEmbed() {

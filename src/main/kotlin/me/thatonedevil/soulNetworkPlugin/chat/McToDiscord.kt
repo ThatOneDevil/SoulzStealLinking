@@ -19,6 +19,9 @@ class McToDiscord : Listener {
 
     @EventHandler
     fun asyncChatEvent(event: AsyncChatEvent) {
+
+        if (event.isCancelled) return
+
         val message = event.message()
         val rawMessage = PlainTextComponentSerializer.plainText().serialize(message)
         val player = event.player
