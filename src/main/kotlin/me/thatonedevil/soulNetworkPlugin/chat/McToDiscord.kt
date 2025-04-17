@@ -75,7 +75,7 @@ class McToDiscord : Listener {
 
         webhookClient.sendMessage(formattedMessage)
             .setAvatarUrl("https://cravatar.eu/head/${player.uniqueId}.png")
-            .setUsername("$rawPrefix ${player.name}")
+            .setUsername("$rawPrefix${player.name}")
             .queue()
 
     }
