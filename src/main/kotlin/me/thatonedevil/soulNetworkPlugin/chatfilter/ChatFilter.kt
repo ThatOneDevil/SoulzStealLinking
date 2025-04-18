@@ -1,10 +1,11 @@
 package me.thatonedevil.soulNetworkPlugin.chatfilter
 
 import me.thatonedevil.soulNetworkPlugin.SoulNetworkPlugin.Companion.instance
-
 import java.nio.file.Files
-import kotlin.io.path.Path
 import java.util.concurrent.CompletableFuture
+import kotlin.io.path.Path
+import kotlin.text.isNotEmpty
+import kotlin.text.trim
 
 class ChatFilter {
 
@@ -12,12 +13,23 @@ class ChatFilter {
     private var badWords: List<String> = emptyList()
 
     @Volatile
-    private var chatFormatBadWords: Map<String, String> = emptyMap()
+    private var compiledPatterns: Map<String, Regex> = emptyMap()
 
-    private fun toRegex(word: String): String {
-        return word.mapNotNull { c ->
-            ObfuscatedChar.getRegexChar(c)?.let { "[$it]+" } // Allow repeated occurrences of each character
-        }.joinToString("[\\s\\W_]*", prefix = ".*", postfix = ".*")
+    private fun toRegexPattern(word: String): Regex {
+        val regex = buildString {
+            append(".*")
+            word.forEachIndexed { index, c ->
+                val part = when {
+                    c.isLetter() -> ObfuscatedChar.getRegexChar(c)
+                    c.isDigit() -> ObfuscatedDigit.getRegexChar(c)
+                    else -> Regex.escape(c.toString())
+                }
+                append("[").append(part ?: Regex.escape(c.toString())).append("]")
+                if (index != word.lastIndex) append("[\\W\\d_]*")
+            }
+            append(".*")
+        }
+        return Regex(regex, RegexOption.IGNORE_CASE)
     }
 
     private fun readBadWordsAsync(): CompletableFuture<List<String>> {
@@ -26,11 +38,11 @@ class ChatFilter {
             if (Files.exists(filePath) && Files.isReadable(filePath)) {
                 try {
                     Files.readAllLines(filePath)
-                        .map { it.trim() } // Trim spaces/tabs around each word
-                        .filter { it.isNotEmpty() } // Filter out empty/blank lines
+                        .map { it.trim() }
+                        .filter { it.isNotEmpty() }
                 } catch (e: Exception) {
                     println("Error reading bad words file: ${e.message}")
-                    emptyList() // Return an empty list if there is an issue
+                    emptyList()
                 }
             } else {
                 println("Bad words file not found or not readable. Using empty list.")
@@ -42,17 +54,17 @@ class ChatFilter {
     fun reloadBadWords() {
         readBadWordsAsync().thenAccept { words ->
             badWords = words
-            chatFormatBadWords = badWords.associateWith { toRegex(it) }
-            println("Successfully reloaded bad words. Total words: ${badWords.size}")
-        }.exceptionally { throwable ->
-            println("Failed to reload bad words. Details: ${throwable.message}")
+            compiledPatterns = words.associateWith { toRegexPattern(it) }
+            println("Reloaded bad words. Total: ${words.size}")
+        }.exceptionally {
+            println("Reload failed: ${it.message}")
             null
         }
     }
 
     fun findBadWord(message: String): String? {
-        return chatFormatBadWords.entries.firstOrNull { (_, pattern) ->
-            Regex(pattern, RegexOption.IGNORE_CASE).containsMatchIn(message)
+        return compiledPatterns.entries.firstOrNull { (_, regex) ->
+            regex.containsMatchIn(message)
         }?.key
     }
 
