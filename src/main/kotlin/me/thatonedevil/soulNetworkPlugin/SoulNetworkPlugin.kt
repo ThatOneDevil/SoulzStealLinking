@@ -66,9 +66,6 @@ class SoulNetworkPlugin : JavaPlugin() {
             logger.severe("Shutdown error: ${e.message}")
         }
 
-        val item = ItemStack(Material.STONE)
-        item.itemMeta.addEnchant(Enchantment.SHARPNESS, 1, false)
-
         server.messenger.unregisterIncomingPluginChannel(this)
         server.messenger.unregisterOutgoingPluginChannel(this)
 
