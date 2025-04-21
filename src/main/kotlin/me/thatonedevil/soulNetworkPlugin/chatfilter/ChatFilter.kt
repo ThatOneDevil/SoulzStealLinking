@@ -1,11 +1,11 @@
 package me.thatonedevil.soulNetworkPlugin.chatfilter
 
+import ObfuscatedChar
+import ObfuscatedDigit
 import me.thatonedevil.soulNetworkPlugin.SoulNetworkPlugin.Companion.instance
 import java.nio.file.Files
 import java.util.concurrent.CompletableFuture
 import kotlin.io.path.Path
-import kotlin.text.isNotEmpty
-import kotlin.text.trim
 
 class ChatFilter {
     @Volatile

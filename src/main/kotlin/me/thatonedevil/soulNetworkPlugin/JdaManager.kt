@@ -93,7 +93,7 @@ object JdaManager {
                     logError("JDA took too long to shut down, skipping")
                 }
 
-            }), 15, TimeUnit.SECONDS);
+            }), 15, TimeUnit.SECONDS)
         } catch (e: Exception) {
             logError("$e")
         }

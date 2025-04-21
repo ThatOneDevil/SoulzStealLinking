@@ -8,9 +8,6 @@ import me.thatonedevil.soulNetworkPlugin.linking.PlayerJoinEvents
 import me.thatonedevil.soulNetworkPlugin.linking.PluginMessageListener
 import net.luckperms.api.LuckPerms
 import org.bukkit.Bukkit
-import org.bukkit.Material
-import org.bukkit.enchantments.Enchantment
-import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import java.sql.DriverManager
 import java.util.concurrent.Callable
@@ -45,8 +42,8 @@ class SoulNetworkPlugin : JavaPlugin() {
 
         server.pluginManager.registerEvents(McToDiscord(), this)
         server.pluginManager.registerEvents(PlayerJoinEvents(), this)
-        server.messenger.registerIncomingPluginChannel(this, "soulzproxy:main", PluginMessageListener());
-        server.messenger.registerOutgoingPluginChannel(this, "soulzproxy:main");
+        server.messenger.registerIncomingPluginChannel(this, "soulzproxy:main", PluginMessageListener())
+        server.messenger.registerOutgoingPluginChannel(this, "soulzproxy:main")
 
 
         getCommand("configReload")?.setExecutor(ConfigReload())

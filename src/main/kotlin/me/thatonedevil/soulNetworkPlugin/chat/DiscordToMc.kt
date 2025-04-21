@@ -6,8 +6,6 @@ import me.thatonedevil.soulNetworkPlugin.SoulNetworkPlugin.Companion.instance
 import me.thatonedevil.soulNetworkPlugin.Utils.convertLegacyToMiniMessage
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
-import net.kyori.adventure.text.minimessage.MiniMessage
-
 import org.bukkit.Bukkit
 
 
