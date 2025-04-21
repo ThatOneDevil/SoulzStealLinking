@@ -5,8 +5,7 @@ api-version: '1.21'
 authors: [ ThatOneDevil ]
 website: https://thatonedevil.github.io/
 
-
 commands:
   configReload:
     description: reload config
-    permission: linking.configreload
+    permission: SoulNetworkPlugin.configReload

@@ -19,7 +19,6 @@ class McToDiscord : Listener {
 
     @EventHandler
     fun asyncChatEvent(event: AsyncChatEvent) {
-
         if (event.isCancelled) return
 
         val message = event.message()
@@ -28,7 +27,6 @@ class McToDiscord : Listener {
 
         val badWord = chatFilter?.findBadWord(rawMessage)
         if (badWord != null) {
-
             val chatFilterMessage = instance.config.getString("messages.chatFilter.blockedMessage")!!
                 .replace("<badWord>", badWord)
 
@@ -38,7 +36,6 @@ class McToDiscord : Listener {
         }
 
         if (event.isCancelled) return
-
         if (!jdaEnabled) return
 
         val configMessage = instance.config.getString("messages.mcToDiscordMessage")!!
@@ -48,14 +45,13 @@ class McToDiscord : Listener {
 
         val HEX_COLOR_PATTERN = Pattern.compile("[§&]x")
         val ANY_COLOR_PATTERN = Pattern.compile("(?i)[&§][0-9a-folkrnm]")
+        val mentionPattern = Pattern.compile("@everyone|@here|<@|!")
 
         val prefix = groupName?.let { group ->
             lpApi?.groupManager?.getGroup(group)?.cachedData?.metaData?.prefix
         } ?: user?.cachedData?.metaData?.prefix ?: ""
 
         val rawPrefix = prefix.replace(HEX_COLOR_PATTERN.toRegex(), "").replace(ANY_COLOR_PATTERN.toRegex(), "")
-
-        val mentionPattern = Pattern.compile("@everyone|@here|<@|!")
 
         val matcher = mentionPattern.matcher(rawMessage)
 
