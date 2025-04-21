@@ -60,12 +60,6 @@ class PlayerJoinEvents : Listener {
 
     }
 
-    @EventHandler
-    fun c(event: InventoryClickEvent){
-        event.clickedInventory
-        event.isShiftClick
-    }
-
     private fun formatPlayTime(milliseconds: Long): String {
         val totalSeconds = milliseconds / 1000
         val days = totalSeconds / (24 * 3600)
