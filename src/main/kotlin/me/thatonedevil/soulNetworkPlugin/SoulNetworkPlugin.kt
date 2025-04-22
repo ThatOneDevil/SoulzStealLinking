@@ -8,7 +8,11 @@ import me.thatonedevil.soulNetworkPlugin.linking.PlayerJoinEvents
 import me.thatonedevil.soulNetworkPlugin.linking.PluginMessageListener
 import net.luckperms.api.LuckPerms
 import org.bukkit.Bukkit
+import org.bukkit.Material
+import org.bukkit.attribute.Attribute
+import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
+import sun.tools.jconsole.Messages.ATTRIBUTES
 import java.sql.DriverManager
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors

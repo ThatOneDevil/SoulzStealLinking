@@ -28,7 +28,6 @@ object JdaManager {
     private var isReady: Boolean = false
     private var guild: Guild? = null
     var serverChat: TextChannel? = null
-    private var verifiedRole: Role? = null
 
     fun init() {
         if (!jdaEnabled) return
@@ -107,15 +106,12 @@ object JdaManager {
         val config = instance.config
         val guildId = config.getString("guildId")
         val serverChatId = config.getString("serverChatChannel")
-        val verifiedRoleId = config.getString("verifiedRole")
 
         guild = jda.getGuildById(guildId ?: "")
         serverChat = jda.getTextChannelById(serverChatId ?: "")
-        verifiedRole = guild?.getRoleById(verifiedRoleId ?: "")
 
         if (guild == null) logError("Guild not found ($guildId)")
         if (serverChat == null) logError("Server chat channel not found ($serverChatId)")
-        if (verifiedRole == null) logError("Verified role not found ($verifiedRoleId)")
     }
 
     private fun registerCommands() {

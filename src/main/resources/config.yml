@@ -4,8 +4,6 @@ token: ""
 guildId: ""
 # Must be set to the channel id of the server chat channel
 serverChatChannel: ""
-# Must be set to the role id of the verified role
-verifiedRole: ""
 
 jdaEnabled: true
 
