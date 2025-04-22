@@ -23,7 +23,12 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
     compileOnly("net.luckperms:api:5.4")
 
-    implementation("net.dv8tion:JDA:5.3.0")
+    implementation("net.dv8tion:JDA:5.3.0"){
+        exclude(module="opus-java")
+        exclude(module="tink")
+    }
+
+
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("ch.qos.logback:logback-classic:1.5.6")
 }

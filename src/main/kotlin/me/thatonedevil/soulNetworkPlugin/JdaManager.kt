@@ -8,7 +8,6 @@ import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Guild
-import net.dv8tion.jda.api.entities.Role
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel
 import net.dv8tion.jda.api.events.session.ShutdownEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
@@ -128,7 +127,7 @@ object JdaManager {
         if (!jdaEnabled) return
 
         val embed = EmbedBuilder().setColor(Color.GREEN)
-            .setAuthor("Server started ✅", null, null)
+            .setDescription("Server started ✅")
             .build()
 
         serverChat?.sendMessageEmbeds(embed)?.queue()
