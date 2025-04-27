@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder
 import me.thatonedevil.soulNetworkPlugin.SoulNetworkPlugin.Companion.instance
 import me.thatonedevil.soulNetworkPlugin.SoulNetworkPlugin.Companion.soulLogger
 import me.thatonedevil.soulNetworkPlugin.chat.DiscordToMc
+import me.thatonedevil.soulNetworkPlugin.commads.discord.PlayerList
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
@@ -44,7 +45,7 @@ object JdaManager {
                     .setMemberCachePolicy(MemberCachePolicy.ALL)
                     .setBulkDeleteSplittingEnabled(false)
                     .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT)
-                    .addEventListeners(DiscordToMc())
+                    .addEventListeners(DiscordToMc(), PlayerList())
                     .build()
                     .awaitReady()
 
@@ -117,9 +118,7 @@ object JdaManager {
         if (!jdaEnabled) return
 
         guild?.updateCommands()?.addCommands(
-            Commands.slash("linkembed", "Makes the link embed"),
-            Commands.slash("userinfo", "Shows user info")
-                .addOptions(OptionData(OptionType.USER, "user", "The user to show info for").setRequired(true))
+            Commands.slash("playerlist", "send the list of online players"),
         )?.queue()
     }
 

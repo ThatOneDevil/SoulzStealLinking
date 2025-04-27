@@ -48,7 +48,7 @@ class PlayerJoinEvents : Listener {
         val embed = EmbedBuilder()
             .setColor(Color.RED)
             .setAuthor("${player.name} left the server!", null, "https://cravatar.eu/head/${player.uniqueId}.png")
-            .setDescription("**Time played:** ``$playTimeFormatted``\n**IP: soulzsteal.minehut.gg**")
+            .setDescription("**Time played:** ``$playTimeFormatted``\n**IP: soulnetwork.minehut.gg**")
             .build()
 
         Bukkit.getScheduler().runTaskLaterAsynchronously(instance, Runnable {

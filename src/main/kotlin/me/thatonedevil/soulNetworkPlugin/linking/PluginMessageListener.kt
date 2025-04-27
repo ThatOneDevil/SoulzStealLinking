@@ -12,12 +12,12 @@ class PluginMessageListener : PluginMessageListener {
         val input = ByteStreams.newDataInput(message)
 
         if (channel == "soulzproxy:main") {
-            val discordId = input.readUTF()
+            val uuid = input.readUTF()
             val linked = input.readBoolean()
 
             if (linked) {
                 Bukkit.getScheduler().runTask(instance, Runnable {
-                    val playerLinkedEvent = PlayerLinkedEvent(player, discordId, true)
+                    val playerLinkedEvent = PlayerLinkedEvent(player,true, uuid)
                     Bukkit.getPluginManager().callEvent(playerLinkedEvent)
                 })
             }

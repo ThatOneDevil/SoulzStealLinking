@@ -4,10 +4,10 @@ import org.bukkit.entity.Player
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
-class PlayerLinkedEvent(
+class PlayerLinkedEvent (
     val player: Player,
-    val discordId: String,
-    val isLinked: Boolean
+    val isLinked: Boolean,
+    val uuid: String,
 ) : Event() {
 
     override fun getHandlers(): HandlerList = handlerList

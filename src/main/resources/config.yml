@@ -1,5 +1,7 @@
 token: ""
 
+serverName: "LifeSteal"
+
 # Must be set to the guild id of the discord server
 guildId: ""
 # Must be set to the channel id of the server chat channel
