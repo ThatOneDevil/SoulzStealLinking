@@ -4,7 +4,6 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder
 import me.thatonedevil.soulNetworkPlugin.SoulNetworkPlugin.Companion.instance
 import me.thatonedevil.soulNetworkPlugin.SoulNetworkPlugin.Companion.soulLogger
 import me.thatonedevil.soulNetworkPlugin.chat.DiscordToMc
-import me.thatonedevil.soulNetworkPlugin.commads.discord.PlayerList
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
@@ -12,9 +11,6 @@ import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel
 import net.dv8tion.jda.api.events.session.ShutdownEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
-import net.dv8tion.jda.api.interactions.commands.OptionType
-import net.dv8tion.jda.api.interactions.commands.build.Commands
-import net.dv8tion.jda.api.interactions.commands.build.OptionData
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.MemberCachePolicy
 import java.awt.Color
@@ -45,13 +41,12 @@ object JdaManager {
                     .setMemberCachePolicy(MemberCachePolicy.ALL)
                     .setBulkDeleteSplittingEnabled(false)
                     .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT)
-                    .addEventListeners(DiscordToMc(), PlayerList())
+                    .addEventListeners(DiscordToMc())
                     .build()
                     .awaitReady()
 
                 isReady = true
                 validateJDAConfig()
-                registerCommands()
                 sendStartupEmbed()
             }.onFailure {
                 soulLogger!!.severe("Failed to init JDA: ${it.message}")
@@ -112,14 +107,6 @@ object JdaManager {
 
         if (guild == null) logError("Guild not found ($guildId)")
         if (serverChat == null) logError("Server chat channel not found ($serverChatId)")
-    }
-
-    private fun registerCommands() {
-        if (!jdaEnabled) return
-
-        guild?.updateCommands()?.addCommands(
-            Commands.slash("playerlist", "send the list of online players"),
-        )?.queue()
     }
 
     private fun sendStartupEmbed() {
