@@ -2,7 +2,7 @@ package me.thatonedevil.soulNetworkPlugin
 
 import me.thatonedevil.soulNetworkPlugin.chat.McToDiscord
 import me.thatonedevil.soulNetworkPlugin.chatfilter.ChatFilter
-import me.thatonedevil.soulNetworkPlugin.commads.ConfigReload
+import me.thatonedevil.soulNetworkPlugin.commands.ConfigReload
 import me.thatonedevil.soulNetworkPlugin.linking.PlayerJoinEvents
 import me.thatonedevil.soulNetworkPlugin.linking.PluginMessageListener
 import net.luckperms.api.LuckPerms

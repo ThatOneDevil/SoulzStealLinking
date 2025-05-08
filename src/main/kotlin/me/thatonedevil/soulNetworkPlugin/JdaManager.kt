@@ -8,6 +8,8 @@ import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Guild
+import net.dv8tion.jda.api.entities.IncomingWebhookClient
+import net.dv8tion.jda.api.entities.WebhookClient
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel
 import net.dv8tion.jda.api.events.session.ShutdownEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
@@ -24,6 +26,7 @@ object JdaManager {
     private var isReady: Boolean = false
     private var guild: Guild? = null
     var serverChat: TextChannel? = null
+    var webhookClient: IncomingWebhookClient? = null
 
     fun init() {
         if (!jdaEnabled) return
@@ -101,12 +104,15 @@ object JdaManager {
         val config = instance.config
         val guildId = config.getString("guildId")
         val serverChatId = config.getString("serverChatChannel")
+        val webhookUrl = instance.config.getString("webhook.url")
 
         guild = jda.getGuildById(guildId ?: "")
         serverChat = jda.getTextChannelById(serverChatId ?: "")
 
         if (guild == null) logError("Guild not found ($guildId)")
         if (serverChat == null) logError("Server chat channel not found ($serverChatId)")
+        webhookClient = WebhookClient.createClient(jda, webhookUrl.toString())
+
     }
 
     private fun sendStartupEmbed() {

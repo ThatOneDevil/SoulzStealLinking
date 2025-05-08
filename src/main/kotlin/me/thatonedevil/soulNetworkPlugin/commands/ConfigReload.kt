@@ -1,4 +1,4 @@
-package me.thatonedevil.soulNetworkPlugin.commads
+package me.thatonedevil.soulNetworkPlugin.commands
 
 import me.thatonedevil.soulNetworkPlugin.SoulNetworkPlugin.Companion.chatFilter
 import me.thatonedevil.soulNetworkPlugin.SoulNetworkPlugin.Companion.instance

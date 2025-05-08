@@ -3,6 +3,7 @@ package me.thatonedevil.soulNetworkPlugin.chat
 import io.papermc.paper.event.player.AsyncChatEvent
 import me.thatonedevil.soulNetworkPlugin.JdaManager.jda
 import me.thatonedevil.soulNetworkPlugin.JdaManager.jdaEnabled
+import me.thatonedevil.soulNetworkPlugin.JdaManager.webhookClient
 import me.thatonedevil.soulNetworkPlugin.SoulNetworkPlugin.Companion.chatFilter
 import me.thatonedevil.soulNetworkPlugin.SoulNetworkPlugin.Companion.instance
 import me.thatonedevil.soulNetworkPlugin.SoulNetworkPlugin.Companion.lpApi
@@ -10,8 +11,10 @@ import me.thatonedevil.soulNetworkPlugin.Utils.convertLegacyToMiniMessage
 import net.dv8tion.jda.api.entities.WebhookClient
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
+import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import java.util.concurrent.LinkedBlockingQueue
 import java.util.regex.Pattern
 
 
@@ -65,14 +68,10 @@ class McToDiscord : Listener {
         val formattedMessage = configMessage
             .replace("<message>", LegacyComponentSerializer.legacyAmpersand().serialize(message))
 
-        val webhookUrl = instance.config.getString("webhook.url")
-
-        val webhookClient = WebhookClient.createClient(jda, webhookUrl.toString())
-
-        webhookClient.sendMessage(formattedMessage)
-            .setAvatarUrl("https://cravatar.eu/head/${player.uniqueId}.png")
-            .setUsername("$rawPrefix${player.name}")
-            .queue()
+        webhookClient?.sendMessage(formattedMessage)
+            ?.setAvatarUrl("https://cravatar.eu/head/${player.uniqueId}.png")
+            ?.setUsername("$rawPrefix${player.name}")
+            ?.queue()
 
     }
 }
