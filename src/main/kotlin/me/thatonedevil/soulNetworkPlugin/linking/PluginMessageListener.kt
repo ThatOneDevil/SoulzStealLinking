@@ -6,6 +6,12 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.plugin.messaging.PluginMessageListener
 
+
+/**
+ * This class listens for plugin messages from the proxy plugin.
+ * It is used to link players to their discord accounts.
+ *
+ */
 class PluginMessageListener : PluginMessageListener {
     override fun onPluginMessageReceived(channel: String, player: Player, message: ByteArray) {
 
