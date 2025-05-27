@@ -44,6 +44,8 @@ class SoulNetworkPlugin : JavaPlugin() {
 
         getCommand("configReload")?.setExecutor(ConfigReload())
         chatFilter?.reloadBadWords()
+        McToDiscord.startDispatcher()
+
 
     }
 

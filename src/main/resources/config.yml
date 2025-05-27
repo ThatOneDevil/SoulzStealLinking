@@ -12,6 +12,7 @@ jdaEnabled: true
 webhook:
   # Must be set to the webhook url of the server chat channel
   url: ""
+  webhookId: ""
 
 messages:
   # <roleColor> color of role
