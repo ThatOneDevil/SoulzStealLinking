@@ -27,6 +27,7 @@ object JdaManager {
     private var guild: Guild? = null
     var serverChat: TextChannel? = null
     var webhookClient: IncomingWebhookClient? = null
+    var serverChatToggle: Boolean = instance.config.getBoolean("serverChatToggle")
 
     fun init() {
         if (!jdaEnabled) return
@@ -104,7 +105,7 @@ object JdaManager {
         val config = instance.config
         val guildId = config.getString("guildId")
         val serverChatId = config.getString("serverChatChannel")
-        val webhookUrl = instance.config.getString("webhook.url")
+        val webhookUrl = config.getString("webhook.url")
 
         guild = jda.getGuildById(guildId ?: "")
         serverChat = jda.getTextChannelById(serverChatId ?: "")
@@ -112,7 +113,6 @@ object JdaManager {
         if (guild == null) logError("Guild not found ($guildId)")
         if (serverChat == null) logError("Server chat channel not found ($serverChatId)")
         webhookClient = WebhookClient.createClient(jda, webhookUrl.toString())
-
     }
 
     private fun sendStartupEmbed() {

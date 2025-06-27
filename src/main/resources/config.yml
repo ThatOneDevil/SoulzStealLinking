@@ -8,6 +8,7 @@ guildId: ""
 serverChatChannel: ""
 
 jdaEnabled: true
+serverChatToggle: true
 
 webhook:
   # Must be set to the webhook url of the server chat channel
