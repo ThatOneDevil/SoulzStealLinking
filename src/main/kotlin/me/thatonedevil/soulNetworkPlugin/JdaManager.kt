@@ -41,13 +41,16 @@ object JdaManager {
 
         CompletableFuture.runAsync {
             runCatching {
-                jda = JDABuilder.createDefault(token)
+                val builder = JDABuilder.createDefault(token)
                     .setMemberCachePolicy(MemberCachePolicy.ALL)
                     .setBulkDeleteSplittingEnabled(false)
                     .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT)
-                    .addEventListeners(DiscordToMc())
-                    .build()
-                    .awaitReady()
+
+                if (serverChatToggle) {
+                    jda.addEventListener(DiscordToMc())
+                }
+
+                jda = builder.build().awaitReady()
 
                 isReady = true
                 validateJDAConfig()

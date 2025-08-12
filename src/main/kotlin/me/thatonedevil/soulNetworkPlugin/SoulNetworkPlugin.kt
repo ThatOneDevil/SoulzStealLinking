@@ -1,5 +1,6 @@
 package me.thatonedevil.soulNetworkPlugin
 
+import me.thatonedevil.soulNetworkPlugin.JdaManager.serverChatToggle
 import me.thatonedevil.soulNetworkPlugin.chat.McToDiscord
 import me.thatonedevil.soulNetworkPlugin.chatfilter.ChatFilter
 import me.thatonedevil.soulNetworkPlugin.commands.ConfigReload
@@ -36,7 +37,9 @@ class SoulNetworkPlugin : JavaPlugin() {
 
         JdaManager.init()
 
-        server.pluginManager.registerEvents(McToDiscord(), this)
+        if (serverChatToggle) {
+            server.pluginManager.registerEvents(McToDiscord(), this)
+        }
         server.pluginManager.registerEvents(PlayerJoinEvents(), this)
         server.messenger.registerIncomingPluginChannel(this, "soulzproxy:main", PluginMessageListener())
         server.messenger.registerOutgoingPluginChannel(this, "soulzproxy:main")
