@@ -18,7 +18,7 @@ class DiscordToMc : ListenerAdapter() {
         val authorID = event.author.id
 
         // webhook id
-        if (authorID == "1355620686349205504" || event.author.isBot) {
+        if (authorID == "1429133771185193130" || event.author.isBot) {
             return
         }
 

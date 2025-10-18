@@ -49,13 +49,13 @@ object LinkCode : CommandExecutor {
         sender.sendMessage(serializedMessage.clickEvent(ClickEvent.copyToClipboard(code)))
 
         Bukkit.getScheduler().runTaskLater(instance, Runnable {
-            if (linkingCodes.containsKey(code)) {
-                linkingCodes.remove(code)
-                val expiredMessage = instance.config.getString("messages.linkCodeExpired")
-                val miniMessageExpired = convertLegacyToMiniMessage(expiredMessage.toString())
-                val serializedExpiredMessage = MiniMessage.miniMessage().deserialize(miniMessageExpired)
-                sender.sendMessage(serializedExpiredMessage)
-            }
+            val uuid = linkingCodes[code] ?: return@Runnable
+            linkingCodes.remove(code)
+            val player = Bukkit.getPlayer(uuid)
+            val expiredMessage = instance.config.getString("messages.linkCodeExpired")
+            val miniMessageExpired = convertLegacyToMiniMessage(expiredMessage.toString())
+            val serializedExpiredMessage = MiniMessage.miniMessage().deserialize(miniMessageExpired)
+            player?.sendMessage(serializedExpiredMessage)
         }, 600L)
 
         return true
