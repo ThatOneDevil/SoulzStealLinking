@@ -10,8 +10,26 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import org.bukkit.Bukkit
 import java.awt.Color
+import java.util.concurrent.ConcurrentLinkedQueue
 
 class DiscordToMc : ListenerAdapter() {
+
+    private data class MessageData(
+        val roleColor: String,
+        val roleName: String,
+        val discordName: String,
+        val text: String
+    )
+
+    private val messageQueue = ConcurrentLinkedQueue<MessageData>()
+    private val BATCH_SIZE = 10
+    private val FLUSH_INTERVAL_TICKS = 40L // 2 seconds (20 ticks = 1 second)
+
+    init {
+        Bukkit.getScheduler().runTaskTimerAsynchronously(instance, Runnable {
+            flushMessages()
+        }, FLUSH_INTERVAL_TICKS, FLUSH_INTERVAL_TICKS)
+    }
 
     override fun onMessageReceived(event: MessageReceivedEvent) {
         if (!shouldProcessMessage(event)) return
@@ -20,7 +38,11 @@ class DiscordToMc : ListenerAdapter() {
         val member = event.member ?: return
 
         val messageData = extractMessageData(member, text)
-        sendToMinecraft(messageData)
+        messageQueue.offer(messageData)
+
+        if (messageQueue.size >= BATCH_SIZE) {
+            flushMessages()
+        }
     }
 
     private fun shouldProcessMessage(event: MessageReceivedEvent): Boolean {
@@ -29,10 +51,7 @@ class DiscordToMc : ListenerAdapter() {
         val authorID = event.author.id
         val channelID = event.channel.id
 
-        // Ignore webhook messages or bot messages
         if (authorID == instance.config.getString("webhook.webhookId") || event.author.isBot) return false
-
-        // Only process messages from the designated chat channel
         if (channelID != serverChat?.id) return false
 
         return true
@@ -51,21 +70,25 @@ class DiscordToMc : ListenerAdapter() {
         return color?.let { String.format("#%02X%02X%02X", it.red, it.green, it.blue) } ?: "#FFFFFF"
     }
 
-    private fun sendToMinecraft(data: MessageData) {
-        val rawMessage = instance.config.getString("messages.discordToMcMessage")!!
-        val formattedMessage = rawMessage
-            .replace("<roleColor>", "<color:${data.roleColor}>")
-            .replace("<roleName>", data.roleName)
-            .replace("<discordName>", data.discordName)
-            .replace("<text>", data.text)
+    private fun flushMessages() {
+        if (messageQueue.isEmpty()) return
 
-        Bukkit.broadcast(convertLegacyToMiniMessage(formattedMessage))
+        val rawTemplate = instance.config.getString("messages.discordToMcMessage") ?: return
+
+        val messagesToSend = mutableListOf<String>()
+        while (messageQueue.isNotEmpty()) {
+            val data = messageQueue.poll() ?: continue
+            val formatted = rawTemplate
+                .replace("<roleColor>", "<color:${data.roleColor}>")
+                .replace("<roleName>", data.roleName)
+                .replace("<discordName>", data.discordName)
+                .replace("<text>", data.text)
+            messagesToSend.add(formatted)
+        }
+
+        if (messagesToSend.isEmpty()) return
+
+        val combined = messagesToSend.joinToString("\n")
+        Bukkit.broadcast(convertLegacyToMiniMessage(combined))
     }
-
-    private data class MessageData(
-        val roleColor: String,
-        val roleName: String,
-        val discordName: String,
-        val text: String
-    )
 }
